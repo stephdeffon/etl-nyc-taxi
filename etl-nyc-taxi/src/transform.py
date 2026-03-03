@@ -1,0 +1,85 @@
+import pandas as pd
+import logging
+import argparse
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),                 # console
+        logging.FileHandler("info.log", encoding="utf-8")  # fichier
+    ]
+)
+
+
+def substract_df(df):
+
+    cols_to_keep = ['tpep_pickup_datetime','tpep_dropoff_datetime',
+                'passenger_count','PULocationID','DOLocationID',
+                'fare_amount','tip_amount']
+    df_substracted= df[cols_to_keep]
+
+    ## clean date time
+    dt_cols = ['tpep_pickup_datetime','tpep_dropoff_datetime']
+
+    for col in dt_cols:
+        df_substracted[col] = pd.to_datetime(df_substracted[col],errors='coerce')
+
+    return df_substracted
+
+
+def get_features_df(df):
+    df['trip_duration'] = (df['tpep_dropoff_datetime'] - df['tpep_pickup_datetime']).dt.total_seconds().div(60).astype(int)
+    df['pickup_date'] = df['tpep_pickup_datetime'].dt.date
+    df['pickup_time'] = df['tpep_pickup_datetime'].dt.time
+    df['pickup_hour'] = df['tpep_pickup_datetime'].dt.hour
+    return df
+
+def clean_df(df):
+    
+    initial_rows_count = len(df)
+
+    # Remove trips with fare negative or null
+    df_clean = df.loc[df['fare_amount']>0]
+
+    # Remove trips with duration less than a minute or negative
+    df_clean = df_clean.loc[df_clean["trip_duration"]>0]
+
+    # Remove trips with drop off datetime earlier than pick up time
+    df_clean = df_clean.loc[df_clean['tpep_pickup_datetime'] < df_clean['tpep_dropoff_datetime']]
+
+    # Remove trips without passengers
+    df_clean = df_clean.fillna({'passenger_count':0})
+    df_clean = df_clean.loc[df_clean['passenger_count'] > 0]
+
+    final_rows_count = len(df_clean)
+
+    logging.info(f"Rows before: {initial_rows_count}")
+    logging.info(f"Rows after: {final_rows_count}")
+    logging.info(f"Rows removed: {initial_rows_count - final_rows_count}")
+
+    return df_clean   
+
+def transform(filename):
+    try:
+        df = pd.read_parquet(filename,engine='pyarrow')
+    except FileNotFoundError:
+        logging.error(f'File {filename} does not exists')
+        return 
+    df = substract_df(df)
+    df = get_features_df(df)
+    df = clean_df(df)
+    return df
+
+
+
+if __name__ == "__main__":
+    try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-f','--filename', dest = 'filename', help = 'filename in parquet format', required=True)
+    except argparse.ArgumentError: 
+        logging.error('Catching an argument error')
+        
+    args = parser.parse_args()
+
+    transform(args.filename)

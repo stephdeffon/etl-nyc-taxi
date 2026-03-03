@@ -33,8 +33,8 @@ def get_stats_on_file(filename):
 
 
 def fetch_taxi_file(month,year,force=False):
-    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_{year}-{month}.parquet"
-    filename = Path(f"data/bronze/{year}/{month}/yellow_tripdata_{year}_{month}.parquet")
+    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month}.parquet"
+    filename = Path(f"./data/bronze/yellow_tripdata_{year}_{month}.parquet")
     filename.parent.mkdir(parents=True, exist_ok=True) 
 
     if(not filename.is_file() or force):
