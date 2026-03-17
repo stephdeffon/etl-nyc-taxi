@@ -1,0 +1,42 @@
+from extract import fetch_taxi_file
+from transform import transform
+from load import init_db, load_dataframe
+from config import *
+import argparse
+
+
+def parse_args():
+    try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-m', '--month',
+                            dest='month', help='month in format mm', required=True)
+        parser.add_argument('-y', '--year',
+                            dest='year', help='year in format aaaa', required=True)
+        parser.add_argument('-f', '--force',
+                            dest='force',
+                            action='store_true', help='force downloadig the file even if it is alreday existing')
+    except argparse.ArgumentError:
+        log.error('Catching an argument error')   
+    args = parser.parse_args()
+    (month, year, force) = (args.month, args.year, args.force)
+    return (month, year, force)
+
+
+def main():
+
+    log.info('ETL Starting...')
+    (month, year, force) = parse_args()
+    #extract
+    filename = fetch_taxi_file(month, year, force)
+
+    #transform
+    df = transform(filename)
+
+    #load
+    init_db()
+    load_dataframe(df)
+
+    log.info('ETL Done...')
+
+if __name__ == "__main__":
+    main()

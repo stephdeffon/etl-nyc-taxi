@@ -2,21 +2,12 @@ from os import name
 
 import pandas as pd
 import requests
-import logging
 import pyarrow as pa
 import argparse
+from config import *
 
 from pathlib import Path
 
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(),                 # console
-        logging.FileHandler("info.log", encoding="utf-8")  # fichier
-    ]
-)
 
 
 def get_stats_on_file(filename):
@@ -32,7 +23,7 @@ def get_stats_on_file(filename):
 
 def fetch_taxi_file(month, year, force=False):
     url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month}.parquet"
-    filename = Path(f"./data/bronze/yellow_tripdata_{year}_{month}.parquet")
+    filename = Path(f"{DATA_DIR}/bronze/yellow_tripdata_{year}_{month}.parquet")
     filename.parent.mkdir(parents=True, exist_ok=True) 
     if(not filename.is_file() or force):
         with open(filename, "wb") as f:
@@ -40,12 +31,13 @@ def fetch_taxi_file(month, year, force=False):
                 r=requests.get(url)
                 with open(filename, 'wb') as f:
                     f.write(r.content)
-                    logging.info(f"Fetched taxi file {filename}")
-                    logging.info(get_stats_on_file(filename))
+                    log.info(f"Fetched taxi file {filename}")
+                    log.info(get_stats_on_file(filename))
             except Exception as e:
-                logging.error(f'Error fetching {filename}: {e}')
+                log.error(f'Error fetching {filename}: {e}')
     else:
-        logging.info(f"File {filename} already exists")
+        log.info(f"File {filename} already exists")
+    return filename
     
 
 if __name__ == "__main__":
@@ -59,7 +51,7 @@ if __name__ == "__main__":
                             dest='force',
                             action='store_true', help='force downloadig the file even if it is alreday existing')
     except argparse.ArgumentError:
-        logging.error('Catching an argument error')   
+        log.error('Catching an argument error')   
     args = parser.parse_args()
     (month, year, force) = (args.month, args.year, args.force)
     fetch_taxi_file(month, year, force)

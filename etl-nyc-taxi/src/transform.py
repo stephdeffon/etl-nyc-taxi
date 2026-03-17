@@ -1,16 +1,6 @@
 import pandas as pd
-import logging
+from config import *
 import argparse
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(),                 # console
-        logging.FileHandler("info.log", encoding="utf-8")  # fichier
-    ]
-)
-
 
 def substract_df(df):
 
@@ -54,9 +44,17 @@ def clean_df(df):
 
     final_rows_count = len(df_clean)
 
-    logging.info(f"Rows before: {initial_rows_count}")
-    logging.info(f"Rows after: {final_rows_count}")
-    logging.info(f"Rows removed: {initial_rows_count - final_rows_count}")
+    # rename columns
+    df_clean = df_clean.rename(columns={
+    "tpep_pickup_datetime": "pickup_datetime",
+    "tpep_dropoff_datetime": "dropoff_datetime",
+    "PULocationID": "pu_location_id",
+    "DOLocationID": "do_location_id",
+})
+
+    log.info(f"Rows before: {initial_rows_count}")
+    log.info(f"Rows after: {final_rows_count}")
+    log.info(f"Rows removed: {initial_rows_count - final_rows_count}")
 
     return df_clean   
 
@@ -64,7 +62,7 @@ def transform(filename):
     try:
         df = pd.read_parquet(filename,engine='pyarrow')
     except FileNotFoundError:
-        logging.error(f'File {filename} does not exists')
+        log.error(f'File {filename} does not exists')
         return 
     df = substract_df(df)
     df = get_features_df(df)
@@ -78,7 +76,7 @@ if __name__ == "__main__":
         parser = argparse.ArgumentParser()
         parser.add_argument('-f','--filename', dest = 'filename', help = 'filename in parquet format', required=True)
     except argparse.ArgumentError: 
-        logging.error('Catching an argument error')
+        log.error('Catching an argument error')
         
     args = parser.parse_args()
 

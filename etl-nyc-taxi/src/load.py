@@ -13,14 +13,24 @@ def init_db():
     with open(f'{SQL_DIR}/ddl.sql','r') as file:
         sql_init=file.read()
     engine=get_engine()
-    with engine.connect() as connection:
+    with engine.begin() as connection:
         result=connection.execute(text(sql_init))
     log.info('Init db done.')
 
 def load_dataframe(df):
-
-
+    engine = get_engine()
+    df.to_sql(
+        name="fact_trips",
+        schema="dwh",
+        con=engine,
+        if_exists="append",
+        index=False,
+        chunksize=10000,
+        method='multi'
+    )
     pass
 
 if __name__ == "__main__":
     init_db()
+
+    pd.read_parquet(f"{DATA_DIR}/bronze/ye")
