@@ -25,12 +25,43 @@ def load_dataframe(df):
         con=engine,
         if_exists="append",
         index=False,
-        chunksize=10000,
+        chunksize=100000,
         method='multi'
     )
-    pass
+
+from datetime import date
+from sqlalchemy import text
+
+def delete_existing_month(year, month):
+    engine = get_engine()
+
+    year = int(year)
+    month = int(month)
+
+    month_start = date(year, month, 1)
+
+    if month == 12:
+        next_month_start = date(year + 1, 1, 1)
+    else:
+        next_month_start = date(year, month + 1, 1)
+
+    query = text("""
+        DELETE FROM dwh.fact_trips
+        WHERE pickup_date >= :month_start
+          AND pickup_date < :next_month_start
+    """)
+
+    with engine.begin() as connection:
+        result = connection.execute(
+            query,
+            {
+                "month_start": month_start,
+                "next_month_start": next_month_start,
+            }
+        )
+
+    return result.rowcount
+
 
 if __name__ == "__main__":
     init_db()
-
-    pd.read_parquet(f"{DATA_DIR}/bronze/ye")

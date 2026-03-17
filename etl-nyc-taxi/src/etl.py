@@ -1,6 +1,6 @@
 from extract import fetch_taxi_file
 from transform import transform
-from load import init_db, load_dataframe
+from load import init_db, load_dataframe, delete_existing_month
 from config import *
 import argparse
 
@@ -34,6 +34,8 @@ def main():
 
     #load
     init_db()
+    deleted_rows = delete_existing_month(year, month)
+    log.info("Deleted %s existing rows for %s-%s", deleted_rows, year, month)
     load_dataframe(df)
 
     log.info('ETL Done...')
