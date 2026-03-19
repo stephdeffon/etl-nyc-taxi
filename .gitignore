@@ -1,0 +1,6 @@
+*.log
+*.vscode
+.ipynb_checkpoints
+explore_data.ipynb
+data/*
+src/__pycache__/*

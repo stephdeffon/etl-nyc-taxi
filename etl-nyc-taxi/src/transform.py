@@ -23,6 +23,9 @@ def get_features_df(df):
     df['pickup_date'] = df['tpep_pickup_datetime'].dt.date
     df['pickup_time'] = df['tpep_pickup_datetime'].dt.time
     df['pickup_hour'] = df['tpep_pickup_datetime'].dt.hour
+    df['dropoff_date'] = df['tpep_dropoff_datetime'].dt.date
+    df['dropoff_time'] = df['tpep_dropoff_datetime'].dt.time
+    df['dropoff_hour'] = df['tpep_dropoff_datetime'].dt.hour
     return df
 
 def clean_df(df):
@@ -58,7 +61,7 @@ def clean_df(df):
 
     return df_clean   
 
-def transform(filename):
+def transform(filename,month,year):
     try:
         df = pd.read_parquet(filename,engine='pyarrow')
     except FileNotFoundError:
@@ -67,6 +70,8 @@ def transform(filename):
     df = substract_df(df)
     df = get_features_df(df)
     df = clean_df(df)
+    df['source_month'] = int(month)
+    df['source_year'] = int(year)
     return df
 
 

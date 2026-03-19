@@ -1,3 +1,5 @@
+from numpy import insert
+
 from extract import fetch_taxi_file
 from transform import transform
 from load import init_db, load_dataframe, delete_existing_month
@@ -30,15 +32,22 @@ def main():
     filename = fetch_taxi_file(month, year, force)
 
     #transform
-    df = transform(filename)
+    df = transform(filename,month,year)
 
     #load
     init_db()
-    deleted_rows = delete_existing_month(year, month)
-    log.info("Deleted %s existing rows for %s-%s", deleted_rows, year, month)
-    load_dataframe(df)
+    deleted_rows = delete_existing_month(month, year)
+    log.info("Deleted %s existing rows for %s-%s", deleted_rows, month, year)
+    
+    inserted_rows = load_dataframe(df)
+    log.info('Rows inserted: %s',inserted_rows)
+
+    if(deleted_rows != inserted_rows and deleted_rows > 0):
+        log.warning('Rows deleted different than rows inserted for %s-%s. Before: %s / After: %s', month, year, deleted_rows, inserted_rows) 
 
     log.info('ETL Done...')
+
+   
 
 if __name__ == "__main__":
     main()

@@ -15,5 +15,10 @@ CREATE TABLE IF NOT EXISTS "dwh".fact_trips(
     pickup_date date,
     pickup_time time,
     pickup_hour int,
+    dropoff_date date,
+    dropoff_time time,
+    dropoff_hour int,
+    source_month int,
+    source_year int,
     dwh_create_date timestamp DEFAULT current_date
 )
