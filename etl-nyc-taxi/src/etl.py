@@ -8,6 +8,7 @@ import argparse
 
 
 def parse_args():
+    """Parse CLI arguments and return (month, year, force)."""
     try:
         parser = argparse.ArgumentParser()
         parser.add_argument('-m', '--month',
@@ -25,6 +26,7 @@ def parse_args():
 
 
 def main():
+    """Run the end-to-end ETL workflow for a given month and year."""
 
     log.info('ETL Starting...')
     (month, year, force) = parse_args()

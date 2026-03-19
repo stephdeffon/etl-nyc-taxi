@@ -5,11 +5,13 @@ from config import *
 from datetime import date
  
 def get_engine():
+    """Create and return a SQLAlchemy engine for PostgreSQL."""
     engine=create_engine(
             f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}")
     return engine
 
 def init_db():
+    """Initialize database objects by executing the DDL script."""
     log.info("Init db. Create table fact_trips...")
     with open(f'{SQL_DIR}/ddl.sql','r') as file:
         sql_init=file.read()
@@ -19,6 +21,7 @@ def init_db():
     log.info('Init db done.')
 
 def load_dataframe(df):
+    """Append a dataframe into dwh.fact_trips and return inserted row count."""
     engine = get_engine()
     nb_rows_inserted = df.to_sql(
         name="fact_trips",
@@ -34,6 +37,7 @@ def load_dataframe(df):
 
 
 def delete_existing_month(month, year):
+    """Delete existing rows for a given source month and year."""
     engine = get_engine()
 
     year = int(year)

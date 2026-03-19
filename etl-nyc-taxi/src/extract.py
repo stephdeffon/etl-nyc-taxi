@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 def get_stats_on_file(filename):
+    """Return basic parquet file statistics."""
     # Read parquet file
     df = pd.read_parquet(filename,engine='pyarrow')
     summary = {
@@ -22,6 +23,7 @@ def get_stats_on_file(filename):
 
 
 def fetch_taxi_file(month, year, force=False):
+    """Download a monthly taxi parquet file into the bronze layer."""
     url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month}.parquet"
     filename = Path(f"{DATA_DIR}/bronze/yellow_tripdata_{year}_{month}.parquet")
     filename.parent.mkdir(parents=True, exist_ok=True) 

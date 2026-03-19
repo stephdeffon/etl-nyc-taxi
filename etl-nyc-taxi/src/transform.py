@@ -3,6 +3,7 @@ from config import *
 import argparse
 
 def substract_df(df):
+    """Select required columns and cast date fields to datetime."""
 
     cols_to_keep = ['tpep_pickup_datetime','tpep_dropoff_datetime',
                 'passenger_count','PULocationID','DOLocationID',
@@ -19,6 +20,7 @@ def substract_df(df):
 
 
 def get_features_df(df):
+    """Create time-based features and trip duration in minutes."""
     df['trip_duration'] = (df['tpep_dropoff_datetime'] - df['tpep_pickup_datetime']).dt.total_seconds().div(60).astype(int)
     df['pickup_date'] = df['tpep_pickup_datetime'].dt.date
     df['pickup_time'] = df['tpep_pickup_datetime'].dt.time
@@ -29,6 +31,7 @@ def get_features_df(df):
     return df
 
 def clean_df(df):
+    """Filter invalid trips and rename columns for downstream consumption."""
     
     initial_rows_count = len(df)
 
@@ -62,6 +65,7 @@ def clean_df(df):
     return df_clean   
 
 def transform(filename,month,year):
+    """Run the full transform pipeline and attach source partition metadata."""
     try:
         df = pd.read_parquet(filename,engine='pyarrow')
     except FileNotFoundError:
