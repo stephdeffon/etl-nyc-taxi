@@ -1,6 +1,7 @@
-*.log
-*.vscode
 .ipynb_checkpoints
-explore_data.ipynb
 data/*
-src/__pycache__/*
+etl-nyc-taxi/
+my_tests/*
+*.env
+*.ipynb
+*.cfg
