@@ -1,7 +1,9 @@
+
+my_tests/*
 .ipynb_checkpoints
 data/*
 etl-nyc-taxi/
-my_tests/*
 *.env
 *.ipynb
 *.cfg
+*.log
