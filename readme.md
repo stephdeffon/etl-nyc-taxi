@@ -3,6 +3,7 @@
 This project loads NYC Yellow Taxi data into PostgreSQL through an ETL pipeline.
 
 The entry point is `src/etl.py`, which orchestrates:
+
 - `extract.fetch_taxi_file(...)`
 - `transform.transform(...)`
 - `load.init_db()`, `load.delete_existing_month(...)`, `load.load_dataframe(...)`
@@ -34,6 +35,7 @@ PG_DB=nyc_taxi
 ```
 
 Description:
+
 - `PG_HOST`: PostgreSQL host
 - `PG_PORT`: PostgreSQL port
 - `PG_USER`: PostgreSQL user
@@ -57,6 +59,7 @@ python src/etl.py -m 01 -y 2025
 ```
 
 Options:
+
 - `-m, --month` (required): month in `mm` format (example: `01`)
 - `-y, --year` (required): year in `yyyy` format (example: `2025`)
 - `-f, --force` (optional): force file download even if it already exists
@@ -77,4 +80,10 @@ python src/etl.py -m 01 -y 2025 -f
 
 - Downloaded raw files: `data/bronze/`
 - SQL table creation script: `sql/ddl.sql`
-- Runtime logs: `info.log`
+- Runtime logs: `logs/info.log`
+
+## 7) Data Quality Rules
+
+Data quality rules used by the cleaning step are documented in:
+
+- `data-quality-rules.md`
