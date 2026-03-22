@@ -14,6 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SQL_DIR = BASE_DIR / "sql"
 DATA_DIR = BASE_DIR / "data"
 LOG_DIR = BASE_DIR / "log"
+ZONE_FILE = Path(f"{DATA_DIR}/bronze/yellow_zone_lookup.csv")
 
 # loading .env
 load_dotenv(BASE_DIR / ".env")

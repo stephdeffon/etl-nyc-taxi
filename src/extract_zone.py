@@ -14,7 +14,7 @@ from pathlib import Path
 def fetch_taxi_zone_file(force=False):
     """Download a monthly taxi parquet file into the bronze layer."""
     url = f"https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
-    filename = Path(f"{DATA_DIR}/bronze/yellow_zone_lookup.csv")
+    filename = ZONE_FILE
     filename.parent.mkdir(parents=True, exist_ok=True) 
     if(not filename.is_file() or force):
         with open(filename, "wb") as f:

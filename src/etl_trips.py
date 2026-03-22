@@ -1,8 +1,8 @@
 from numpy import insert
 
-from extract_trips import fetch_taxi_trips_file
-from transform_trips import transform
-from load_trips import init_db, load_dataframe, delete_existing_month
+from extract_trips import fetch_taxi_trip_file
+from transform_trips import transform_trips
+from load_trips import init_trips, load_dataframe, delete_existing_month
 from config import *
 from utils import get_stats_on_file
 import argparse
@@ -27,17 +27,17 @@ def parse_args():
 
 
 def main(month,year,force):
-    """Run the end-to-end ETL workflow for a given month and year."""
+    """Run the end-to-end ETL trip workflow for a given month and year."""
 
     
     #extract
-    filename = fetch_taxi_trips_file(month, year, force)
+    filename = fetch_taxi_trip_file(month, year, force)
 
     #transform
-    df = transform(filename,month,year)
+    df = transform_trips(filename,month,year)
 
     #load
-    init_db()
+    init_trips()
     deleted_rows = delete_existing_month(month, year)
     log.info("Deleted %s existing rows for %s-%s", deleted_rows, month, year)
     
@@ -47,11 +47,12 @@ def main(month,year,force):
     if(deleted_rows != inserted_rows and deleted_rows > 0):
         log.warning('Rows deleted different than rows inserted for %s-%s. Before: %s / After: %s', month, year, deleted_rows, inserted_rows) 
 
-    log.info('ETL Done...')
+    
 
    
 
 if __name__ == "__main__":
-    log.info('ETL Starting...')
+    log.info('ETL Trip Starting...')
     (month, year, force) = parse_args()
     main(month, year, force)
+    log.info('ETL Trip Done...')

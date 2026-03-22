@@ -3,22 +3,9 @@ import pandas as pd
 from sqlalchemy import create_engine,text
 from config import *
 from datetime import date
- 
-def get_engine():
-    """Create and return a SQLAlchemy engine for PostgreSQL."""
-    engine=create_engine(
-            f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DB}")
-    return engine
 
-def init_db():
-    """Initialize database objects by executing the DDL script."""
-    log.info("Init db. Create table fact_trips...")
-    with open(f'{SQL_DIR}/ddl.sql','r') as file:
-        sql_init=file.read()
-    engine=get_engine()
-    with engine.begin() as connection:
-        result=connection.execute(text(sql_init))
-    log.info('Init db done.')
+from db import get_engine,init_trips
+ 
 
 def load_dataframe(df):
     """Append a dataframe into dwh.fact_trips and return inserted row count."""
@@ -62,5 +49,5 @@ def delete_existing_month(month, year):
 
 
 if __name__ == "__main__":
-    init_db()
+    init_trips()
     delete_existing_month('2025','02')

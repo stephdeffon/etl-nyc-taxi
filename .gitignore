@@ -8,3 +8,4 @@ etl-nyc-taxi/
 *.cfg
 *.log
 .vscode/*
+src/__pycache__/*

@@ -64,7 +64,7 @@ def clean_df(df):
 
     return df_clean   
 
-def transform(filename,month,year):
+def transform_trips(filename,month,year):
     """Run the full transform pipeline and attach source partition metadata."""
     try:
         df = pd.read_parquet(filename,engine='pyarrow')
@@ -89,4 +89,4 @@ if __name__ == "__main__":
         
     args = parser.parse_args()
 
-    transform(args.filename)
+    transform_trips(args.filename)
