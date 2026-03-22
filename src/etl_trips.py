@@ -2,9 +2,8 @@ from numpy import insert
 
 from extract_trips import fetch_taxi_trip_file
 from transform_trips import transform_trips
-from load_trips import init_trips, load_dataframe, delete_existing_month
+from load_trips import init_trips, load_trips, delete_existing_month
 from config import *
-from utils import get_stats_on_file
 import argparse
 
 
@@ -37,19 +36,16 @@ def main(month,year,force):
     df = transform_trips(filename,month,year)
 
     #load
-    init_trips()
     deleted_rows = delete_existing_month(month, year)
     log.info("Deleted %s existing rows for %s-%s", deleted_rows, month, year)
     
-    inserted_rows = load_dataframe(df)
+    inserted_rows = load_trips(df)
     log.info('Rows inserted: %s',inserted_rows)
 
     if(deleted_rows != inserted_rows and deleted_rows > 0):
         log.warning('Rows deleted different than rows inserted for %s-%s. Before: %s / After: %s', month, year, deleted_rows, inserted_rows) 
 
     
-
-   
 
 if __name__ == "__main__":
     log.info('ETL Trip Starting...')

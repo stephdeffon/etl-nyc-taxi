@@ -1,14 +1,20 @@
 
 import pandas as pd
-from sqlalchemy import create_engine,text
+from sqlalchemy import text
 from config import *
 from datetime import date
 
 from db import get_engine,init_trips
  
 
-def load_dataframe(df):
+def load_trips(df):
     """Append a dataframe into dwh.fact_trips and return inserted row count."""
+
+    # init table fact_trips
+    init_trips()
+    
+
+
     engine = get_engine()
     nb_rows_inserted = df.to_sql(
         name="fact_trips",
