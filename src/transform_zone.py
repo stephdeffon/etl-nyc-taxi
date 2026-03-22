@@ -16,6 +16,8 @@ def clean_df_zones(df):
     "Borough" :"borough",
     "Zone": "zone"
     })  
+
+    df = df.fillna('Unknown')
     return df
     
 
