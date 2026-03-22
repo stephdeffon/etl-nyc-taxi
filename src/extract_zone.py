@@ -1,31 +1,20 @@
 from os import name
-
-import pandas as pd
 import requests
-import pyarrow as pa
 import argparse
+from utils import get_stats_on_file
 from config import *
-
 from pathlib import Path
 
 
 
-def get_stats_on_file(filename):
-    """Return basic parquet file statistics."""
-    # Read parquet file
-    df = pd.read_parquet(filename,engine='pyarrow')
-    summary = {
-    "nb_rows": len(df),
-    "nb_columns": len(df.columns),
-    }
-    return summary
 
 
 
-def fetch_taxi_file(month, year, force=False):
+
+def fetch_taxi_zone_file(force=False):
     """Download a monthly taxi parquet file into the bronze layer."""
-    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month}.parquet"
-    filename = Path(f"{DATA_DIR}/bronze/yellow_tripdata_{year}_{month}.parquet")
+    url = f"https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+    filename = Path(f"{DATA_DIR}/bronze/yellow_zone_lookup.csv")
     filename.parent.mkdir(parents=True, exist_ok=True) 
     if(not filename.is_file() or force):
         with open(filename, "wb") as f:
@@ -33,10 +22,11 @@ def fetch_taxi_file(month, year, force=False):
                 r=requests.get(url)
                 with open(filename, 'wb') as f:
                     f.write(r.content)
-                    log.info(f"Fetched taxi file {filename}")
-                    log.info(get_stats_on_file(filename))
+                    log.info(f"Fetched taxi zone file {filename}")
+                    
             except Exception as e:
                 log.error(f'Error fetching {filename}: {e}')
+        log.info(get_stats_on_file(filename,'csv'))
     else:
         log.info(f"File {filename} already exists")
     return filename
@@ -45,15 +35,11 @@ def fetch_taxi_file(month, year, force=False):
 if __name__ == "__main__":
     try:
         parser = argparse.ArgumentParser()
-        parser.add_argument('-m', '--month',
-                            dest='month', help='month in format mm', required=True)
-        parser.add_argument('-y', '--year',
-                            dest='year', help='year in format aaaa', required=True)
         parser.add_argument('-f', '--force',
                             dest='force',
                             action='store_true', help='force downloadig the file even if it is alreday existing')
     except argparse.ArgumentError:
         log.error('Catching an argument error')   
     args = parser.parse_args()
-    (month, year, force) = (args.month, args.year, args.force)
-    fetch_taxi_file(month, year, force)
+    force = args.force
+    fetch_taxi_zone_file(force)

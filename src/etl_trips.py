@@ -1,9 +1,10 @@
 from numpy import insert
 
-from extract import fetch_taxi_file
-from transform import transform
-from load import init_db, load_dataframe, delete_existing_month
+from extract_trips import fetch_taxi_trips_file
+from transform_trips import transform
+from load_trips import init_db, load_dataframe, delete_existing_month
 from config import *
+from utils import get_stats_on_file
 import argparse
 
 
@@ -25,13 +26,12 @@ def parse_args():
     return (month, year, force)
 
 
-def main():
+def main(month,year,force):
     """Run the end-to-end ETL workflow for a given month and year."""
 
-    log.info('ETL Starting...')
-    (month, year, force) = parse_args()
+    
     #extract
-    filename = fetch_taxi_file(month, year, force)
+    filename = fetch_taxi_trips_file(month, year, force)
 
     #transform
     df = transform(filename,month,year)
@@ -52,4 +52,6 @@ def main():
    
 
 if __name__ == "__main__":
-    main()
+    log.info('ETL Starting...')
+    (month, year, force) = parse_args()
+    main(month, year, force)

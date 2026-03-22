@@ -7,3 +7,4 @@ etl-nyc-taxi/
 *.ipynb
 *.cfg
 *.log
+.vscode/*
