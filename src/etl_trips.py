@@ -1,4 +1,4 @@
-from numpy import insert
+
 
 from extract_trips import fetch_taxi_trip_file
 from transform_trips import transform_trips
@@ -36,6 +36,8 @@ def main(month,year,force):
     df = transform_trips(filename,month,year)
 
     #load
+    init_trips()
+
     deleted_rows = delete_existing_month(month, year)
     log.info("Deleted %s existing rows for %s-%s", deleted_rows, month, year)
     

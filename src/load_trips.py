@@ -7,6 +7,17 @@ from datetime import date
 from db import get_engine,init_trips
  
 
+def init_trips():
+    """Initialize table 'fact_trips' by executing the DDL script."""
+    log.info("Init db. Create table fact_trips...")
+    with open(f'{SQL_DIR}/ddl_trips.sql','r') as file:
+        sql_init=file.read()
+    engine=get_engine()
+    with engine.begin() as connection:
+        result=connection.execute(text(sql_init))
+    log.info('Init fact_trips done.')
+
+
 def load_trips(df):
     """Append a dataframe into dwh.fact_trips and return inserted row count."""
 
