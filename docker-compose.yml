@@ -1,0 +1,57 @@
+
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.9.1
+  #image: apache/airflow:3.1.8
+  env_file:
+    - .env
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+  depends_on:
+    - postgres
+
+services:
+
+  postgres:
+    image: postgres:16
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${AIRFLOW_PG_USER}
+      POSTGRES_PASSWORD: ${AIRFLOW_PG_PASSWORD}
+      POSTGRES_DB: ${AIRFLOW_PG_DB}
+      #POSTGRES_PORT: ${AIRFLOW_PG_PORT}
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command: >
+      -c "
+      airflow db init &&
+      airflow users create \
+        --username ${AIRFLOW_USER} \
+        --password ${AIRFLOW_PASSWORD} \
+        --firstname admin \
+        --lastname admin \
+        --role Admin \
+        --email admin@example.com
+      "
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "${AIRFLOW_WEBSERVER_PORT}:8080"
+    restart: always
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: always
+
+volumes:
+  postgres-db-volume:
