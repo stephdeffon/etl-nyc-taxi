@@ -1,5 +1,5 @@
 import pandas as pd
-from config import *
+from src.config import *
 import argparse
 
 def substract_df(df):
