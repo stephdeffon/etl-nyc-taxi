@@ -1,7 +1,7 @@
 from fileinput import filename
 
 import pandas as pd
-from config import *
+from src.config import *
 import argparse
 
 filename = ZONE_FILE
