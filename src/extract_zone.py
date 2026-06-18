@@ -1,8 +1,8 @@
 from os import name
 import requests
 import argparse
-from utils import get_stats_on_file
-from config import *
+from src.utils import get_stats_on_file
+from src.config import *
 from pathlib import Path
 
 
