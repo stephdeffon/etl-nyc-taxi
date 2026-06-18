@@ -1,7 +1,7 @@
 
 import pandas as pd
 from sqlalchemy import text
-from config import *
+from src.config import *
 from datetime import date
 
 from db import get_engine,init_trips
