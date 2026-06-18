@@ -4,21 +4,11 @@ import pandas as pd
 import requests
 import pyarrow as pa
 import argparse
-from config import *
+from src.config import *
+from src.utils import get_stats_on_file
 
 from pathlib import Path
 
-
-
-def get_stats_on_file(filename):
-    """Return basic parquet file statistics."""
-    # Read parquet file
-    df = pd.read_parquet(filename,engine='pyarrow')
-    summary = {
-    "nb_rows": len(df),
-    "nb_columns": len(df.columns),
-    }
-    return summary
 
 
 
