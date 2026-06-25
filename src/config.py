@@ -27,6 +27,13 @@ PG_DB = os.getenv("PG_DB")
 PG_PORT = os.getenv("PG_PORT")
 
 
+# Create default directorIES
+
+SQL_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+
 log.basicConfig(
     level=log.INFO,
     format="%(asctime)s %(levelname)s %(name)s - %(message)s",
