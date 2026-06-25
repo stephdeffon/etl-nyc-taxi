@@ -1,7 +1,7 @@
 
 my_tests/*
 .ipynb_checkpoints
-data/bronze/*
+data/*
 etl-nyc-taxi/
 *.env
 *.ipynb
@@ -9,3 +9,5 @@ etl-nyc-taxi/
 *.log
 .vscode/*
 src/__pycache__/*
+.coveragerc
+htmlcov
