@@ -3,7 +3,9 @@ run-name: Tests pour ${{ github.ref_name }}
 
 on: 
     push:
-        branches: ["main", "pytest", "add-unit-test-workflow"]
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
     workflow_dispatch: 
 
