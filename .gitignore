@@ -8,6 +8,10 @@ etl-nyc-taxi/
 *.cfg
 *.log
 .vscode/*
-src/__pycache__/*
-.coveragerc
+*.coverage
+*.coveragerc
 htmlcov
+*.pyc
+*/logs/*
+latest
+simple_dags.py
