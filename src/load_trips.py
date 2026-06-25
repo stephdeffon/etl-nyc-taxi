@@ -1,21 +1,18 @@
-
-import pandas as pd
 from sqlalchemy import text
-from src.config import *
-from datetime import date
+from src.config import log, SQL_DIR
 
-from db import get_engine,init_trips
- 
+from db import get_engine
+
 
 def init_trips():
     """Initialize table 'fact_trips' by executing the DDL script."""
     log.info("Init db. Create table fact_trips...")
-    with open(f'{SQL_DIR}/ddl_trips.sql','r') as file:
-        sql_init=file.read()
-    engine=get_engine()
+    with open(f"{SQL_DIR}/ddl_trips.sql", "r") as file:
+        sql_init = file.read()
+    engine = get_engine()
     with engine.begin() as connection:
-        result=connection.execute(text(sql_init))
-    log.info('Init fact_trips done.')
+        connection.execute(text(sql_init))
+    log.info("Init fact_trips done.")
 
 
 def load_trips(df):
@@ -23,8 +20,6 @@ def load_trips(df):
 
     # init table fact_trips
     init_trips()
-    
-
 
     engine = get_engine()
     nb_rows_inserted = df.to_sql(
@@ -34,10 +29,9 @@ def load_trips(df):
         if_exists="append",
         index=False,
         chunksize=100000,
-        method='multi'
+        method="multi",
     )
     return nb_rows_inserted
-
 
 
 def delete_existing_month(month, year):
@@ -59,7 +53,7 @@ def delete_existing_month(month, year):
             {
                 "month": month,
                 "year": year,
-            }
+            },
         )
 
     return result.rowcount
@@ -67,4 +61,4 @@ def delete_existing_month(month, year):
 
 if __name__ == "__main__":
     init_trips()
-    delete_existing_month('2025','02')
+    delete_existing_month("2025", "02")

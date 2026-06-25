@@ -1,26 +1,26 @@
 name: Unit tests
 run-name: Tests pour ${{ github.ref_name }}
 
-on: 
+on:
     push:
         branches: ["main"]
     pull_request:
         branches: ["main"]
 
-    workflow_dispatch: 
+    workflow_dispatch:
 
 
 permissions:
     contents: read
 
 
-jobs: 
+jobs:
     test:
       runs-on: ubuntu-24.04
       steps:
         - name: "Checkout"
-          uses: actions/checkout@v4 
-        
+          uses: actions/checkout@v4
+
         - name: "Install Python"
           uses: actions/setup-python@v5
           with:
@@ -31,5 +31,3 @@ jobs:
 
         - name: Run tests
           run: 'pytest'
-        
-        
