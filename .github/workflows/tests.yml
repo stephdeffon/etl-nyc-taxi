@@ -1,9 +1,11 @@
 name: Unit tests
-
+run-name: Tests pour ${{ github.ref_name }}
 
 on: 
     push:
         branches: ["main", "pytest", "add-unit-test-workflow"]
+
+    workflow_dispatch: 
 
 
 permissions:
