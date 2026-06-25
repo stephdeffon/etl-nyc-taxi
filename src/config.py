@@ -4,9 +4,6 @@ import os
 import logging as log
 
 
-
-
-
 # get base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,7 +35,7 @@ log.basicConfig(
     level=log.INFO,
     format="%(asctime)s %(levelname)s %(name)s - %(message)s",
     handlers=[
-        log.StreamHandler(),                 # console
-        log.FileHandler(LOG_DIR / "info.log", encoding="utf-8")  # file
-    ]
+        log.StreamHandler(),  # console
+        log.FileHandler(LOG_DIR / "info.log", encoding="utf-8"),  # file
+    ],
 )
