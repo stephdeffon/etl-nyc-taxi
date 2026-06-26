@@ -14,8 +14,8 @@ def test_fetch_taxi_zone_file_should_download(mocker, mock_downloaded_file):
     mock_request = mocker.patch(
         "src.extract_zone.requests.get", return_value=mock_downloaded_file
     )
-    mocker.patch("src.extract_zone.Path.mkdir")
-    mocker.patch("src.extract_zone.Path.is_file", return_value=False)
+    mocker.patch("pathlib.Path.mkdir")
+    mocker.patch("pathlib.Path.is_file", return_value=False)
     mocker.patch("src.extract_zone.get_stats_on_file")
     mocker.patch("builtins.open", mocker.mock_open())
 
@@ -27,8 +27,8 @@ def test_fetch_taxi_zone_file_should_force_download(mocker, mock_downloaded_file
     mock_request = mocker.patch(
         "src.extract_zone.requests.get", return_value=mock_downloaded_file
     )
-    mocker.patch("src.extract_zone.Path.mkdir")
-    mocker.patch("src.extract_zone.Path.is_file", return_value=True)
+    mocker.patch("pathlib.Path.mkdir")
+    mocker.patch("pathlib.Path.is_file", return_value=True)
     mocker.patch("src.extract_zone.get_stats_on_file")
     mocker.patch("builtins.open", mocker.mock_open())
 
@@ -40,8 +40,8 @@ def test_fetch_taxi_zone_file_should_not_download(mocker, mock_downloaded_file):
     mock_request = mocker.patch(
         "src.extract_zone.requests.get", return_value=mock_downloaded_file
     )
-    mocker.patch("src.extract_zone.Path.mkdir")
-    mocker.patch("src.extract_zone.Path.is_file", return_value=True)
+    mocker.patch("pathlib.Path.mkdir")
+    mocker.patch("pathlib.Path.is_file", return_value=True)
     mocker.patch("src.extract_zone.get_stats_on_file")
     mocker.patch("builtins.open", mocker.mock_open())
 
