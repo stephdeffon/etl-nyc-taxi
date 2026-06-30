@@ -87,3 +87,34 @@ python src/etl.py -m 01 -y 2025 -f
 Data quality rules used by the cleaning step are documented in:
 
 - `data-quality-rules.md`
+
+## Setup Airflow
+
+```bash
+cd airflow/
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+docker compose up airflow-init
+docker compose up -d
+```
+
+> Le fichier `.env` est ignoré par git (voir `.gitignore`).
+
+## Base de données
+
+Le projet utilise le PostgreSQL inclus dans la stack Airflow.
+
+Créer la base de données NYC Taxi :
+
+```bash
+docker compose exec postgres psql -U airflow -c "CREATE DATABASE nyc_taxi;"
+```
+
+Variables d'environnement à ajouter dans `airflow/.env` :
+
+```
+PG_HOST=postgres
+PG_PORT=5432
+PG_USER=airflow
+PG_PASSWORD=airflow
+PG_DB=nyc_taxi
+```
