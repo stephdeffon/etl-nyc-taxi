@@ -4,13 +4,14 @@ from airflow.sdk import dag, task
 
 
 @dag(
-    schedule=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
     tags=["etl_trip"],
+    # Schedule at the beggining of each mont
+    schedule="0 6 1 * *",
     params={
-        "month": "02",
-        "year": "2025",
+        "month": None,
+        "year": None,
         "force": False,
     },
 )
@@ -20,8 +21,11 @@ def nyc_trips_etl():
     def extract(**context):
         from src.extract_trips import fetch_taxi_trip_file
 
-        month = context["params"]["month"]
-        year = context["params"]["year"]
+        ## Take params first else context logical date
+        month = context["params"]["month"] or str(context["logical_date"].month).zfill(
+            2
+        )
+        year = context["params"]["year"] or str(context["logical_date"].year)
         force = context["params"]["force"]
         print("start extract")
         filename = fetch_taxi_trip_file(month, year, force)
@@ -35,8 +39,11 @@ def nyc_trips_etl():
         from src.config import DATA_DIR
         from src.transform_trips import transform_trips
 
-        month = context["params"]["month"]
-        year = context["params"]["year"]
+        ## Take params first else context logical date
+        month = context["params"]["month"] or str(context["logical_date"].month).zfill(
+            2
+        )
+        year = context["params"]["year"] or str(context["logical_date"].year)
         df = transform_trips(Path(filename), month, year)
         path = str(DATA_DIR) + f"/silver/tripdata_{month}_{year}.parquet"
         df.to_parquet(path)
@@ -52,8 +59,11 @@ def nyc_trips_etl():
 
     @task()
     def delete_existing_month_task(**context):
-        month = context["params"]["month"]
-        year = context["params"]["year"]
+        ## Take params first else context logical date
+        month = context["params"]["month"] or str(context["logical_date"].month).zfill(
+            2
+        )
+        year = context["params"]["year"] or str(context["logical_date"].year)
         from src.load_trips import delete_existing_month
 
         print("start delete")

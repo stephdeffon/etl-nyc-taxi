@@ -1,7 +1,7 @@
 from sqlalchemy import text
 from src.config import log, SQL_DIR
 
-from db import get_engine
+from src.db import get_engine
 
 
 def init_zones():
