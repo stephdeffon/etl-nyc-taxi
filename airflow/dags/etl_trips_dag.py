@@ -1,6 +1,7 @@
 import pendulum
 
 from airflow.sdk import dag, task
+from dags_utils import on_failure_callback
 
 
 @dag(
@@ -13,6 +14,12 @@ from airflow.sdk import dag, task
         "month": None,
         "year": None,
         "force": False,
+    },
+    default_args={
+        "retry_delay": pendulum.duration(minutes=5),
+        "retries": 2,
+        "execution_timeout": pendulum.duration(hours=1),
+        "on_failure_callback": on_failure_callback,
     },
 )
 def nyc_trips_etl():
